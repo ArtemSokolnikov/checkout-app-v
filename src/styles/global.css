@@ -1,0 +1,21 @@
+.customButton {
+  min-width: 150px !important;
+}
+
+.orderStatusMessage {
+  padding: 0 0 0 12px;
+  p {
+    margin: 0px;
+  }
+}
+
+.terms-link {
+  text-decoration: underline !important;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.tooltip-content {
+  max-width: 300px;
+  font-size: 14px;
+  line-height: 1.6;
+}

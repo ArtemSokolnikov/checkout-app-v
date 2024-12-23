@@ -1,19 +1,23 @@
-# checkout-app-v
+# Application
+This is a checkout application that allows users to select a payment method, manage credit card information, and provide a purchase order number.
 
-## Project setup
-```
-npm install
-```
+## Features
+- Dynamic Payment Options
+- Credit Card Management
+- Responsive Design
+- Accessibility
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Technologies Used
+### Frontend
+Framework: Vue.js
+Styling: Vuetify, CSS
+State management: Vuex
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Environment Configuration
+### Running the Application
+Start the frontend development server
+    ```bash
+       npm install
+       npm run serve
+    ```
+The frontend will start on `http://localhost:8080`.
