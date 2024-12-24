@@ -129,24 +129,25 @@
       </v-card>
     </v-dialog>
 
-    <v-row justify="center"  v-if="paymentMethod === 'PurchaseOrder'">
-      <v-col cols="12" sm="8" md="6" >
+    <v-row justify="center" v-if="paymentMethod === 'PurchaseOrder'">
+      <v-col cols="12" sm="8" md="6">
         <v-text-field
-        label="Purchase Order Number"
-        v-model="purchaseOrderNumber"
-        aria-label="Enter the purchase order number"
-        maxlength="12"
-        outlined
-        dense
-        :rules="[minLengthRule, onlyNumbersRule]"
-      />
+          label="Purchase Order Number"
+          v-model="purchaseOrderNumber"
+          aria-label="Enter the purchase order number"
+          maxlength="12"
+          outlined
+          dense
+          :rules="[minLengthRule, onlyNumbersRule]"
+          @focus="purchaseOrderTouched = true"
+        />
       </v-col>
-      <v-col cols="12" sm="4" md="2" >
+      <v-col cols="12" sm="4" md="2">
         <v-btn
-        color="primary"
-        block
-        @click="selectPurchaseOrder"
-        aria-label="Apply Purchase Order"
+          color="primary"
+          block
+          @click="selectPurchaseOrder"
+          aria-label="Apply Purchase Order"
         >Apply number </v-btn
       >
       </v-col>
@@ -161,6 +162,7 @@ export default {
       paymentMethod: null,
       selectedCard: null,
       purchaseOrderNumber: '',
+      purchaseOrderTouched: false,
       showAddCardDialog: false,
       snackbarVisible: false,
       snackbarMessage: '',
@@ -173,9 +175,29 @@ export default {
         saved: true,
       },
       minLengthRule: (value) => {
-        return value.length >= 5 || 'Minimum 5 digits required';
+        return (
+          !this.purchaseOrderTouched ||
+          value.length >= 5 ||
+          'Minimum 5 digits required'
+        );
       },
     };
+  },
+  props: {
+    resetResult: Object,
+  },
+  watch: {
+    resetResult: {
+      handler(newVal) {
+        if (newVal) {
+          this.paymentMethod = newVal.paymentMethod || null;
+          this.selectedCard = newVal.selectedCard || null;
+          this.purchaseOrderNumber = newVal.purchaseOrderNumber || '';
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   computed: {
     creditCards() {
@@ -226,6 +248,8 @@ export default {
     selectPurchaseOrder() {
       if (this.paymentMethod === 'PurchaseOrder' && this.purchaseOrderNumber) {
         this.$store.dispatch('selectPurchaseOrder', this.purchaseOrderNumber);
+        this.purchaseOrderNumber = '';
+        this.purchaseOrderTouched = false;
       }
     },
     formatCardNumber(value) {
@@ -251,7 +275,7 @@ export default {
       return true;
     },
     onlyNumbersRule(value) {
-      if (!value) {
+      if (!value && this.purchaseOrderTouched === true) {
         return 'Please enter details';
       }
       return /^[0-9]*$/.test(value) || 'Please type only numbers';

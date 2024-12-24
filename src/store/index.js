@@ -200,8 +200,6 @@ export default new Vuex.Store({
       commit('SET_SELECTED_CARD', card);
     },
     async setAcceptedTerms({ commit }, value) {
-      console.log('value', value);
-
       commit('SET_ACCEPTED_TERMS', value);
     },
     async fetchCountries({ commit }) {
@@ -300,6 +298,8 @@ export default new Vuex.Store({
         if (response.ok) {
           alert(`Order ${data.id} placed successfully!`);
           commit('SET_ORDER', data);
+          commit('RESET_VALUES');
+
         } else {
           const errorData = await response.json();
           throw new Error(errorData || 'Failed to place Order');

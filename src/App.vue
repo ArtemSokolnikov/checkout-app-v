@@ -3,8 +3,8 @@
     <v-main>
       <AddressSelector />
       <CartSummary />
-      <PaymentSelector />
-      <OrderSummary />
+      <PaymentSelector :resetResult="resetResult"  />
+      <OrderSummary  @place-order="handlePlaceOrder" />
     </v-main>
   </v-app>
 </template>
@@ -22,6 +22,28 @@ export default {
     PaymentSelector,
     OrderSummary,
   },
+  data() {
+    return {
+      resetResult: null,
+    };
+  },
+  methods:{
+    resetPaymentMethod() {
+      this.paymentMethod = null;
+      this.selectedCard = null;
+      this.purchaseOrderNumber = '';
+      this.purchaseOrderTouched = false;
+      return {
+        paymentMethod: this.paymentMethod,
+        selectedCard: this.selectedCard,
+        purchaseOrderNumber: this.purchaseOrderNumber,
+        purchaseOrderTouched: this.purchaseOrderTouched,
+      };
+    },
+    handlePlaceOrder() {
+      this.resetResult = this.resetPaymentMethod();
+    },
+  }
 };
 </script>
 <style src="./styles/global.css"></style>

@@ -11,7 +11,7 @@
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <span class="terms-link" v-bind="attrs" v-on="on">
-               Terms and Conditions
+              Terms and Conditions
             </span>
           </template>
           <div class="tooltip-content">
@@ -23,7 +23,7 @@
     </v-row>
     <v-row justify="center">
       <v-col cols="12" md="8">
-        <v-btn class="customButton" color="success" @click="placeOrder"
+        <v-btn class="customButton" color="success" @click="placeOrderAndEmit"
           >Place Order</v-btn
         >
       </v-col>
@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       acceptedTerms: false,
-      isCurrentOrder: this.$store.state.currentOrder,
     };
   },
   computed: {
@@ -52,37 +51,40 @@ export default {
       this.$store.dispatch('setAcceptedTerms', this.acceptedTerms);
     },
     validateOrder() {
-      if (!this.isCurrentOrder.addressId) {
+      if (!this.orderForPlacement.addressId) {
         alert('Please choose address');
         return false;
       }
-      if (!this.isCurrentOrder.paymentMethod) {
+      if (!this.orderForPlacement.paymentMethod) {
         alert('Please choose payment method');
         return false;
       }
       if (
-        this.isCurrentOrder.paymentMethod === 'PurchaseOrder' &&
-        !this.isCurrentOrder.purchaseOrderNumber
+        this.orderForPlacement.paymentMethod === 'PurchaseOrder' &&
+        !this.orderForPlacement.purchaseOrderNumber
       ) {
-        alert('Please enter your order number and click "Apply"');
+        alert('Please enter your order number and click "Apply number"');
         return false;
       }
       if (
-        this.isCurrentOrder.paymentMethod === 'CreditCard' &&
-        !this.isCurrentOrder.paymentInfoId
+        this.orderForPlacement.paymentMethod === 'CreditCard' &&
+        !this.orderForPlacement.paymentInfoId
       ) {
         alert('Please choose credit card');
         return false;
       }
-      if (!this.isCurrentOrder.termsAndConditionsAccepted) {
+      if (!this.orderForPlacement.termsAndConditionsAccepted) {
         alert('Please confirm the terms and conditions');
         return false;
       }
       return true;
     },
-    placeOrder() {
+    placeOrderAndEmit() {
       if (this.validateOrder()) {
-        this.$store.dispatch('placeOrder', this.orderForPlacement);
+        this.$emit('place-order');
+        this.$store.dispatch('placeOrder', this.orderForPlacement).then(() => {
+          this.acceptedTerms = false;
+        });
       }
     },
   },
